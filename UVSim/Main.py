@@ -35,3 +35,5 @@ for line in list_of_lines:
             BRANCHZERO(line[3:], memory)
         case "43":
             HALT(line[3:], memory)
+        case _:
+            print("Invalid operator")
