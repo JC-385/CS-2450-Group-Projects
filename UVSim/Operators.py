@@ -1,7 +1,8 @@
 #I/O operation:
 #READ = 10 Read a word from the keyboard into a specific location in memory.
+from ipaddress import AddressValueError
 from itertools import accumulate
-
+ 
 
 def READ(location, memory):
     toStore = int(input("Enter a word: "))
@@ -38,6 +39,18 @@ def MULTIPLY(location, memory, accumulator):
 
 #Control operation:
 #BRANCH = 40 Branch to a specific location in memory
+def BRANCH(location):
+    return int(location)
 #BRANCHNEG = 41 Branch to a specific location in memory if the accumulator is negative.
+def BRANCHNEG(address, accumulator):
+    if accumulator < 0:
+        return int(address)
+    return None
 #BRANCHZERO = 42 Branch to a specific location in memory if the accumulator is zero.
+def BRANCHZERO(address, accumulator):
+    if accumulator == 0:
+        return int(address)
+    return None
 #HALT = 43 Pause the program
+def HALT():
+    return True

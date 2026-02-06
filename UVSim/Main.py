@@ -3,7 +3,8 @@ from Operators import *
 #Global dictionary for the memory
 memory = [0]*100
 accumulator = 0 
-
+pc = 0
+halted = False
 list_of_lines = []
 File = input("Enter the file name: ")
 with open (File, "r") as file:
@@ -11,7 +12,8 @@ with open (File, "r") as file:
         list_of_lines.append(line)
 print(list_of_lines)
 
-for line in list_of_lines:
+while pc < len(list_of_lines) and not halted:
+    line = list_of_lines[pc].strip()
     opcode = line[1:3]
     address = int(line[3:5])
     match opcode:
@@ -32,12 +34,21 @@ for line in list_of_lines:
         case "33":
             accumulator = MULTIPLY(address, memory,accumulator)
         case "40":
-            BRANCH(address, memory)
+            BRANCH(address)
+            continue
         case "41":
-            BRANCHNEG(address, memory)
+            new_pc = BRANCHNEG(address, accumulator)
+            if new_pc is not None:
+                pc = new_pc
+                continue
         case "42":
-            BRANCHZERO(address, memory)
+            new_pc = BRANCHZERO(address, accumulator)
+            if new_pc is not None:
+                pc = new_pc
+                continue
         case "43":
-            HALT(address, memory)
+            halted = HALT()
         case _:
             print("Invalid operator")
+
+    pc += 1
