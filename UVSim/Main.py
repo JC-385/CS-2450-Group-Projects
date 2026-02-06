@@ -2,7 +2,7 @@ from email.headerregistry import Address
 from Operators import *
 #Global dictionary for the memory
 memory = [0]*100
-accumulator = 0
+accumulator = 0 
 
 list_of_lines = []
 File = input("Enter the file name: ")
@@ -16,21 +16,21 @@ for line in list_of_lines:
     address = int(line[3:5])
     match opcode:
         case "10":
-            memory = READ(address, memory)
+            READ(address, memory)
         case "11":
-            memory = WRITE(address, memory)
+            WRITE(address, memory)
         case "20":
-            memory = LOAD(address, memory)
+            accumulator = LOAD(address, memory)
         case "21":
-            memory = STORE(address, memory, accumulator)
+            STORE(address, memory, accumulator)
         case "30":
-            memory = ADD(address, memory)
+            accumulator = ADD(address, memory, accumulator)
         case "31":
-            memory = SUBTRACT(address, memory)
+            accumulator = SUBTRACT(address, memory,accumulator)
         case "32":
-            memory = DIVIDE(address, memory)
+            accumulator = DIVIDE(address, memory,accumulator)
         case "33":
-            memory = MULTIPLY(address, memory)
+            accumulator = MULTIPLY(address, memory,accumulator)
         case "40":
             BRANCH(address, memory)
         case "41":
