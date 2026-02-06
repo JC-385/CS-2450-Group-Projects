@@ -1,6 +1,9 @@
+from email.headerregistry import Address
 from Operators import *
 #Global dictionary for the memory
-memory = {}
+memory = [0]*100
+accumulator = 0
+
 list_of_lines = []
 File = input("Enter the file name: ")
 with open (File, "r") as file:
@@ -9,31 +12,32 @@ with open (File, "r") as file:
 print(list_of_lines)
 
 for line in list_of_lines:
-    operator = line[1:2]
-    match operator:
+    opcode = line[1:3]
+    address = int(line[3:5])
+    match opcode:
         case "10":
-            memory = READ(line[3:], memory)
+            memory = READ(address, memory)
         case "11":
-            memory = WRITE(line[3:], memory)
+            memory = WRITE(address, memory)
         case "20":
-            memory = LOAD(line[3:], memory)
+            memory = LOAD(address, memory)
         case "21":
-            memory = STORE(line[3:], memory)
+            memory = STORE(address, memory, accumulator)
         case "30":
-            memory = ADD(line[3:], memory)
+            memory = ADD(address, memory)
         case "31":
-            memory = SUBTRACT(line[3:], memory)
+            memory = SUBTRACT(address, memory)
         case "32":
-            memory = DIVIDE(line[3:], memory)
+            memory = DIVIDE(address, memory)
         case "33":
-            memory = MULTIPLY(line[3:], memory)
+            memory = MULTIPLY(address, memory)
         case "40":
-            BRANCH(line[3:], memory)
+            BRANCH(address, memory)
         case "41":
-            BRANCHNEG(line[3:], memory)
+            BRANCHNEG(address, memory)
         case "42":
-            BRANCHZERO(line[3:], memory)
+            BRANCHZERO(address, memory)
         case "43":
-            HALT(line[3:], memory)
+            HALT(address, memory)
         case _:
             print("Invalid operator")
