@@ -1,8 +1,5 @@
 #I/O operation:
 #READ = 10 Read a word from the keyboard into a specific location in memory.
-from ipaddress import AddressValueError
-from itertools import accumulate
- 
 
 def READ(location, memory):
     toStore = int(input("Enter a word: "))
