@@ -1,0 +1,28 @@
+Design Document
+high-level functionality
+    application asks for the name of a file
+        this text file willl be formated by rows with 4 digits per row
+    the application will then read each row and split the digits into operator and operands
+    the application will complete the operator such as (READ, WRITE, LOAD, STORE, ADD, SUBTRACT, DIVIDE, MULTIPLY, 
+        BRANCH, BRANCHNEG, BRANCHZERO, and HALT )
+
+User Stories
+    As a user I want to be able to interact with the computer at a lower level so i dont take higher level languages for granted
+    as a user I want full control over what my computer computes
+Use Cases
+    test_read, test_read_invalid, test_write, test_write_fail, Test_load, test_load_fail, 
+    test_store, test_store_invaild, test_add, test_add_fail, test_subtract, test_subtract_fail, 
+    test_multiply, test_multiply_fail, test_divide, test_divide_fail, test_branch
+
+
+
+
+group meeting  1/31/26
+Attendance: Daven Nielsen and Jan Chico
+Agenda: talked about the next milestone. What the product specifications are
+    and the way we would split the project up
+
+group meeting 2/7/26
+Attendence: Daven Nielsen and Jan Chico
+Agenda: talked about the program and what else needs to be finished before submission
+    assigned roles and then submitted
