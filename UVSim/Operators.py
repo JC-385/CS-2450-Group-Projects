@@ -3,8 +3,11 @@
 
 def READ(location, memory):
     toStore = int(input("Enter a word: "))
-    memory[int(location)] = toStore
-    return memory
+    if -9999 <= toStore <= 9999:
+        memory[int(location)] = toStore
+        return memory
+    else:
+        raise ValueError("Input must be between, -9999 and 9999.")
 #WRITE = 11 Write a word from a specific location in memory to screen.
 def WRITE(location, memory):
     print(memory[int(location)])
@@ -27,7 +30,7 @@ def SUBTRACT(location, memory, accumulator):
     return accumulator;
 #DIVIDE = 32 Divide the word in the accumulator by a word from a specific location in memory (leave the result in the accumulator).
 def DIVIDE(location, memory, accumulator):
-    accumulator = accumulator / memory[int(location)]
+    accumulator = accumulator // memory[int(location)]
     return accumulator;
 #MULTIPLY = 33 multiply a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator).
 def MULTIPLY(location, memory, accumulator):
