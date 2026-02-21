@@ -1,5 +1,5 @@
 from Simulator import BasicMLSimulator
-from GUI import getEntryValue, run_gui
+from Gui import getEntryValue, run_gui
 
 def main():
     simulator = BasicMLSimulator()
