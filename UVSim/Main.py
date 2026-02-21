@@ -1,4 +1,5 @@
 from Operators import *
+from Gui import *
 #Global dictionary for the memory
 
 def main():
@@ -7,7 +8,7 @@ def main():
     pc = 0
     halted = False
     list_of_lines = []
-    File = input("Enter the file name: ")
+    File = getEntryValue("file")
     with open (File, "r") as file:
         for line in file:
             list_of_lines.append(line)
@@ -53,6 +54,8 @@ def main():
                 print("Invalid operator")
 
         pc += 1
+
+    run_gui()  # Keep window open after simulation (or remove to close immediately)
 
 if __name__ == "__main__":
     main()
