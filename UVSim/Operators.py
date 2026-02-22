@@ -1,7 +1,7 @@
 class Operators:
-    #I/O operation:
-    #READ = 10 Read a word from the keyboard into a specific location in memory.
+    #I/O operations:
 
+    #READ = 10 Read a word from the keyboard into a specific location in memory.
     def READ(self, location, memory):
         toStore = int(input("Enter a word: "))
         if -9999 <= toStore <= 9999:
@@ -12,7 +12,9 @@ class Operators:
     #WRITE = 11 Write a word from a specific location in memory to screen.
     def WRITE(self, location, memory):
         print(memory[int(location)])
+
     #Load/store operations:
+
     #LOAD = 20 Load a word from a specific location in memory into the accumulator.
     def LOAD(self, location, memory):
         return memory[int(location)]
@@ -20,7 +22,8 @@ class Operators:
     def STORE(self, location, memory, accumulator):
         memory[int(location)] = accumulator 
 
-    #Arithmetic operation:
+    #Arithmetic operations:
+
     #ADD = 30 Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
     def ADD(self, location, memory, accumulator):
         accumulator = accumulator + memory[int(location)]
@@ -38,7 +41,8 @@ class Operators:
         accumulator = accumulator * memory[int(location)]
         return accumulator;
 
-    #Control operation:
+    #Control operations:
+    
     #BRANCH = 40 Branch to a specific location in memory
     def BRANCH(self, location):
         return int(location)
