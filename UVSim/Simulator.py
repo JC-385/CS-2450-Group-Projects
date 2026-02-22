@@ -62,6 +62,9 @@ class BasicMLSimulator:
         while not self.halted and self.pc < len(self.program):
             self.step()
 
+    def print_memory(self):
+        print(self.memory)
+
     def reset(self):
         self.memory = [0] * 100
         self.accumulator = 0
