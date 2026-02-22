@@ -10,7 +10,81 @@ User Stories
     As a user I want to be able to interact with the computer at a lower level so i dont take higher level languages for granted
     as a user I want full control over what my computer computes
 Use Cases
-    test_read, test_read_invalid, test_write, test_write_fail, Test_load, test_load_fail, 
-    test_store, test_store_invaild, test_add, test_add_fail, test_subtract, test_subtract_fail, 
-    test_multiply, test_multiply_fail, test_divide, test_divide_fail, test_branch
+    Actor: the program
+    System: memory management and code processor
 
+    READ
+        Goal: read an integer input from the keyboard into a specific memory location
+        Steps:
+        1.Parse function code
+        2.Get user input
+        3.Convert to integer
+        4.Verify range
+        5.Set value in memory
+    WRITE
+        Goal: write the value stored at a specific memory location to the screen
+        Steps:
+        1.Parse function code
+        2.Fetch value from identified memory address
+        3.Output the fetched value to the console
+    LOAD
+        Goal: load a value into the accumulator
+        Steps:
+        1.Parse function code
+        2.Fetch value from specified memory address
+        3.Copy fetched value into accumulator register
+    STORE
+        Goal: store the accumulator's value into a specific memory location
+        Steps:
+        1.Parse function code
+        2.Copy accumulator value into specified memory address
+    ADD
+        Goal: add a value from memory to the accumulator and store the result in the accumulator
+        Steps:
+        1.Parse function code
+        2.Fetch value from speciified memory address
+        3.Add fetched value to accumulator
+        4.Return updated accumulator value
+    SUBTRACT
+        Goal: subtract a value from memory from the accumulator and store the result in the accumulator
+        Steps:
+        1.Parse function code
+        2.Fetch value from speciified memory address
+        3.Subtract fetched value from accumulator
+        4.Return updated accumulator value
+    DIVIDE
+        Goal: divide the accumulator by a value from memory and store the integer result in the accumulator
+        Steps:
+        1.Parse function code
+        2.Fetch value from speciified memory address
+        3.Divide accumulator by fetched value using integer division
+        4.Return updated accumulator value
+    MULTIPLY
+        Goal: multiply the accumulator by a value from memory and store the result in the accumulator
+        Steps:
+        1.Parse function code
+        2.Fetch value from speciified memory address
+        3.Multiply accumulator by fetched value
+        4.Return updated accumulator value
+    BRANCH
+        Goal: unconditionally change the instruction pointer to a specified memory address
+        Steps:
+        1.Parse function code
+        2.Set next instruction pointer to specified address
+    BRANCHNEG
+        Goal: change the instruction pointer to a specified address if the accumulator is negative
+        Steps:
+        1.Parse function code
+        2.Check accumulator sign
+        3.If accumulator is negative, set next instruction pointer to specified address
+    BRANCHZERO
+        Goal: change the instruction pointer to a specified address if the accumulator is zero
+        Steps:
+        1.Parse function code
+        2.Check accumulator value
+        3.If accumulator equals zero, set next instruction pointer to specified address
+    HALT
+        Goal: stop program execution and return control to the environment
+        Steps:
+        1.Parse function code
+        2.Set halted state to True
