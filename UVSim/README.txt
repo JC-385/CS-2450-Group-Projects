@@ -6,7 +6,11 @@ the first 2 are the operator and the last 2 are the operand
 the only requirement is to have the most recent python downloaded.
 
 When you run the Main.py the GUI will start up with the options to run a file, close the program,
-reset the program, and it will also give you the option to see all the operators in the program. 
+reset the program, and the option to see all the operators in the program.
+
+From the GUI you can also open a file and make changes that you would like before running it.
+There is a button called open file that allows you to do this. When you choose you file you would like
+to open no changes are needed in the user input to run the file. 
 
 to run a file, type in the file name, and click the run button. 
 When the program asks for inputs from the test file instructions it will be though the terminal, 
