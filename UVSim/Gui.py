@@ -1,10 +1,12 @@
 import tkinter as tk
 import os
 import sys
+from tkinter import filedialog
+from tkinter.filedialog import askopenfile, askopenfilename
 from Simulator import BasicMLSimulator
 root = tk.Tk()
 root.title("Basic GUI")
-root.geometry("400x400")
+root.geometry("900x900")
 
 # Label - displays text
 label = tk.Label(root, text="Hello, User!")
@@ -16,6 +18,11 @@ entry.pack(pady=5)
 
 # Variable to signal when user has submitted (button clicked)
 result_var = tk.StringVar()
+current_filepath = None
+
+#this creates a small text editor where you can modify the text file with your operations
+text = tk.Text(root, fg='dark green', bg='white', font='times-new-roman 14', width=50, height=10)
+text.pack()
 
 def on_click():
     result_var.set(entry.get())
@@ -35,10 +42,36 @@ def getEntryValue(entryType):
     root.wait_variable(result_var)  # Blocks until result_var is set
     return result_var.get()
 
-# Button - with a callback
+#this allows you to open your file that you want.
+def open_file():
+    global current_filepath
+
+    filepath = askopenfilename(filetypes =[("Text file", "*.txt"),("All Files", "*.*")])
+
+    if filepath:
+        current_filepath = filepath
+        entry.delete(0,tk.END)
+        entry.insert(0, filepath)
+        with open(filepath, 'r') as file:
+            text.delete('1.0', tk.END)
+            text.insert(tk.END, file.read())
+#this saves the changes to your file.
+def save_file():
+    global current_filepath
+
+    
+    if current_filepath is None:
+        current_filepath = filedialog.asksaveasfile(defaultextension='.txt', filetypes=[('Text Files', '*.txt')])
+
+    if current_filepath:
+        with open(current_filepath, 'w') as file:
+            file.write(text.get('1.0', tk.END))
+
+#Button - with a callback
+tk.Button(root, text="Open File", command=open_file).pack(pady = 10)
+tk.Button(root, text="Save File", command=save_file).pack(pady = 10)
 button = tk.Button(root, text="RUN", command=on_click)
 button.pack(pady=10)
-
 
 def second_button():
     #this prints all the operations the program has
