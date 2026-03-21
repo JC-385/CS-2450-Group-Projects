@@ -5,44 +5,28 @@ from tkinter import filedialog
 from tkinter.filedialog import askopenfile, askopenfilename
 from Simulator import BasicMLSimulator
 root = tk.Tk()
-root.title("Basic GUI")
+root.title("UVSim")
 root.geometry("900x900")
 
-# Label - displays text
-label = tk.Label(root, text="Hello, User!")
-label.pack(pady=10)
-
-# Entry - single-line input
-entry = tk.Entry(root, width=25)
-entry.pack(pady=5)
-
-# Variable to signal when user has submitted (button clicked)
-result_var = tk.StringVar()
-current_filepath = None
-
-# creates a small text editor where you can modify the text file with your operations
-text = tk.Text(root, fg='dark green', bg='white', font='times-new-roman 14', width=50, height=10)
-text.pack()
-
-def on_click():
-    result_var.set(entry.get())
+def run_program():
+    result_var.set(filename_entry.get())
 
 def clear_text(event):
-    entry.delete(0, tk.END)
-    entry.unbind("<FocusIn>")
+    filename_entry.delete(0, tk.END)
+    filename_entry.unbind("<FocusIn>")
 
 def getEntryValue(entryType):
-    entry.delete(0, tk.END)  # Clear first
+    filename_entry.delete(0, tk.END)  # Clear first
     if entryType == "file":
-        entry.insert(0, "Enter file name:")
+        filename_entry.insert(0, "Enter file name:")
     else:
-        entry.insert(0, "Enter value:")
+        filename_entry.insert(0, "Enter value:")
 
-    entry.bind("<FocusIn>", clear_text)
+    filename_entry.bind("<FocusIn>", clear_text)
     root.wait_variable(result_var)  # Blocks until result_var is set
     return result_var.get()
 
-# allows you to open the file that you want.
+# allows you to open the file that you want
 def open_file():
     global current_filepath
 
@@ -50,27 +34,22 @@ def open_file():
 
     if filepath:
         current_filepath = filepath
-        entry.delete(0,tk.END)
-        entry.insert(0, filepath)
+        filename_entry.delete(0,tk.END)
+        filename_entry.insert(0, filepath)
         with open(filepath, 'r') as file:
             text.delete('1.0', tk.END)
             text.insert(tk.END, file.read())
-# saves the changes to your file.
+
+# saves the changes to your file
 def save_file():
     global current_filepath
 
-    
     if current_filepath is None:
         current_filepath = filedialog.asksaveasfile(defaultextension='.txt', filetypes=[('Text Files', '*.txt')])
 
     if current_filepath:
         with open(current_filepath, 'w') as file:
             file.write(text.get('1.0', tk.END))
-
-tk.Button(root, text="Open File", command=open_file).pack(pady = 10)
-tk.Button(root, text="Save File", command=save_file).pack(pady = 10)
-button = tk.Button(root, text="RUN", command=on_click)
-button.pack(pady=10)
 
 def console_instructions():
     # prints all the operations the program has
@@ -95,26 +74,51 @@ def console_instructions():
     ]
     print(*operations, sep="\n\n")
 
-
-
-button2 = tk.Button(root, text="Operation Instructions", command=console_instructions)
-button2.pack(pady = 10)
-
 def close():
-    # closes the app.
+    # closes the app
     root.destroy()
-
-close_button = tk.Button(root, text="Exit Program", command=close)
-close_button.pack(pady=10)
-
 
 def reset_bt():
     root.destroy()
     os.execl(sys.executable, sys.executable, *sys.argv)
 
+# Label - displays text
+label = tk.Label(root, text="Hello, User!")
+label.pack(pady=10)
+
+# File control - top row of file-control related elements
+file_control_container = tk.Frame(root)
+file_control_container.pack(pady=10)
+
+# Filename entry - single-line input
+filename_entry = tk.Entry(file_control_container, width=40)
+filename_entry.pack(side=tk.LEFT, padx=5)
+
+# File action buttons inside file control container
+open_button = tk.Button(file_control_container, text="Open File", command=open_file)
+open_button.pack(side=tk.LEFT, padx=5)
+save_button = tk.Button(file_control_container, text="Save File", command=save_file)
+save_button.pack(side=tk.LEFT, padx=5)
+
+# Variable to signal when user has submitted (button clicked)
+result_var = tk.StringVar()
+current_filepath = None
+
+# Small text editor where you can modify the text file with your operations
+text = tk.Text(root, fg='dark green', bg='white', font='times-new-roman 14', width=50, height=10)
+text.pack()
+
+run_button = tk.Button(root, text="RUN", command=run_program)
+run_button.pack(pady=10)
+
+operation_instructions = tk.Button(root, text="Operation Instructions", command=console_instructions)
+operation_instructions.pack(pady = 10)
+
+close_button = tk.Button(root, text="Exit Program", command=close)
+close_button.pack(pady=10)
+
 reset_button = tk.Button(root, text="Reset Program", command=reset_bt)
 reset_button.pack(pady=10)
-
 
 def run_gui():
     """Start the GUI event loop. Call this from Main when you want to show the window."""
