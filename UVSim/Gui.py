@@ -137,8 +137,8 @@ run_button = tk.Button(root, text="RUN", command=run_program)
 run_button.grid(row=3, column=0, pady=10)
 
 # Instructions for use
-instructions_label = tk.Label(root, text="List of Functions:")
-instructions_label.grid(row=4, column=0, sticky='w', padx=10)
+instructions_label = tk.Label(root, text="List of Functions:", anchor="center", justify="center")
+instructions_label.grid(row=4, column=0, sticky='ew', padx=10)
 operation_instructions = tk.Message(root, text=instructions, width=1000, font=(mono_font, 12))
 operation_instructions.grid(row=5, column=0, padx=10, sticky='ew')
 
@@ -146,13 +146,16 @@ operation_instructions.grid(row=5, column=0, padx=10, sticky='ew')
 application_control_container = tk.Frame(root)
 application_control_container.grid(row=6, column=0, padx=10, pady=10, sticky='ew')
 application_control_container.columnconfigure(0, weight=1)
-application_control_container.columnconfigure(1, weight=1)
+application_control_container.columnconfigure(1, weight=0)
+application_control_container.columnconfigure(2, weight=1)
+application_control_container.columnconfigure(3, weight=0)
+application_control_container.columnconfigure(4, weight=1)
 
 # Application control buttons
 reset_button = tk.Button(application_control_container, text="Reset Program", command=reset_application, width=30)
-reset_button.grid(row=0, column=0, padx=5, sticky='w')
+reset_button.grid(row=0, column=1, sticky='e')
 close_button = tk.Button(application_control_container, text="Exit Program", command=close_application, width=30)
-close_button.grid(row=0, column=1, padx=5, sticky='e')
+close_button.grid(row=0, column=3, sticky='w')
 
 def run_gui():
     """Start the GUI event loop. Call this from Main when you want to show the window."""
