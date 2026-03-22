@@ -2,16 +2,18 @@ class Operators:
     #I/O operations:
 
     #READ = 10 Read a word from the keyboard into a specific location in memory.
-    def READ(self, location, memory):
-        toStore = int(input("Enter a word: "))
+    def READ(self, location, memory, input_function):
+        # toStore = int(input("Enter a word: "))
+        toStore = int(input_function("Enter a word"))
+        # toStore = 0
         if -9999 <= toStore <= 9999:
             memory[int(location)] = toStore
             return memory
         else:
             raise ValueError("Input must be between, -9999 and 9999.")
     #WRITE = 11 Write a word from a specific location in memory to screen.
-    def WRITE(self, location, memory):
-        print(memory[int(location)])
+    def WRITE(self, location, memory, output_function):
+        output_function(memory[int(location)])
 
     #Load/store operations:
 

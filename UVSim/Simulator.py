@@ -1,13 +1,15 @@
 from Operators import *
 
 class BasicMLSimulator:
-    def __init__(self):
+    def __init__(self, input_function, output_function):
         self.memory = [0] * 100
         self.accumulator = 0
         self.pc = 0
         self.halted = False
         self.program = []
         self.op = Operators()
+        self.input_function = input_function
+        self.output_function = output_function
 
     def load_program(self, filename):
         with open(filename, "r") as file:
@@ -23,9 +25,9 @@ class BasicMLSimulator:
 
         match opcode:
             case "10":
-                self.op.READ(address, self.memory)
+                self.op.READ(address, self.memory, self.input_function)
             case "11":
-                self.op.WRITE(address, self.memory)
+                self.op.WRITE(address, self.memory, self.output_function)
             case "20":
                 self.accumulator = self.op.LOAD(address, self.memory)
             case "21":

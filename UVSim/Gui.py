@@ -31,7 +31,16 @@ Control     BRANCH = 40 Branch to a specific location in memory
             HALT = 43 Pause the program"""
 
 def run_program():
-    result_var.set(filename_entry.get())
+    simulator = BasicMLSimulator(console_input, console_output)
+
+    filename = filename_entry.get()
+    simulator.load_program(filename)
+
+    enter_console()
+
+    simulator.run()
+    
+    # result_var.set(filename_entry.get())
 
 def clear_text(event):
     filename_entry.delete(0, tk.END)
@@ -104,6 +113,47 @@ def close_application():
     # closes the app
     root.destroy()
 
+def enter_console():
+    file_control_container.grid_forget()
+    text.grid_forget()
+    run_button.grid_forget()
+    instructions_label.grid_forget()
+    operation_instructions.grid_forget()
+    application_control_container.grid_forget()
+
+    console.grid(row=2, column=0, padx=20, pady=20, sticky='nsew')
+    console.columnconfigure(0, weight=1)
+    console.rowconfigure(0, weight=1)
+
+    application_control_container.grid(row=6, column=0, padx=10, pady=10, sticky='ew')
+
+def console_output(output):
+    output_element = tk.Label(console, text=output)
+    output_element.pack()
+
+def console_input(prompt):
+    input_container = tk.Frame(console)
+    input_container.pack(fill='x', pady=5)
+
+    tk.Label(input_container, text=prompt).pack(anchor='w')
+
+    input_field = tk.Entry(input_container)
+    input_field.pack(fill='x')
+
+    done = tk.BooleanVar(value=False)
+
+    def submit():
+        done.set(True)
+
+    tk.Button(input_container, text="Submit", command=submit).pack()
+
+    input_field.focus_set()
+
+    root.update_idletasks()
+    root.wait_variable(done)
+
+    return input_field.get()
+
 # Layout setup: use grid for all root children
 root.columnconfigure(0, weight=1)
 root.rowconfigure(2, weight=1)
@@ -111,6 +161,9 @@ root.rowconfigure(2, weight=1)
 # Label - displays text
 label = tk.Label(root, text="Hello, User!")
 label.grid(row=0, column=0, pady=10, sticky='ew')
+
+# Console - later added by enter_console()
+console = tk.Frame(root)
 
 # File control - top row of file control related elements
 file_control_container = tk.Frame(root)
@@ -136,7 +189,7 @@ text.grid(row=2, column=0, padx=20, pady=20, sticky='nsew')
 run_button = tk.Button(root, text="RUN", command=run_program)
 run_button.grid(row=3, column=0, pady=10)
 
-# Instructions for use
+# Instructions
 instructions_label = tk.Label(root, text="List of Functions:", anchor="center", justify="center")
 instructions_label.grid(row=4, column=0, sticky='ew', padx=10)
 operation_instructions = tk.Message(root, text=instructions, width=1000, font=(mono_font, 12))
