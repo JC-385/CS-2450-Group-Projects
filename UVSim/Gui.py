@@ -166,17 +166,17 @@ def console_input(prompt):
     input_container = tk.Frame(console)
     input_container.pack(fill='x', pady=5)
 
-    tk.Label(input_container, text=prompt).pack(anchor='w')
+    tk.Label(input_container, text=prompt).pack(side=tk.LEFT, anchor='w')
 
     input_field = tk.Entry(input_container)
-    input_field.pack(fill='x')
+    input_field.pack(side=tk.LEFT, fill='x')
 
     done = tk.BooleanVar(value=False)
 
     def submit():
         done.set(True)
 
-    tk.Button(input_container, text="Submit", command=submit).pack()
+    tk.Button(input_container, text="Submit", command=submit).pack(side=tk.LEFT)
 
     input_field.focus_set()
 
