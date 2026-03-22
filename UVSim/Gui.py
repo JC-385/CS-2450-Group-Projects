@@ -150,3 +150,9 @@ close_button.pack(side=tk.LEFT, padx=5)
 def run_gui():
     """Start the GUI event loop. Call this from Main when you want to show the window."""
     root.mainloop()
+
+def focus_window():
+    root.lift()
+    root.focus_force()
+
+root.after(0, focus_window)
