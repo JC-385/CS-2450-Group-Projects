@@ -4,9 +4,31 @@ import sys
 from tkinter import filedialog
 from tkinter.filedialog import askopenfile, askopenfilename
 from Simulator import BasicMLSimulator
+import tkinter.font as tkFont
 root = tk.Tk()
 root.title("UVSim")
-root.geometry("900x900")
+# root.geometry("900x900")
+
+# Variable to signal when user has submitted (button clicked)
+result_var = tk.StringVar()
+current_filepath = None
+
+preferred_fonts = ["Menlo", "Consolas", "DejaVu Sans Mono", "Courier New", "Courier"]
+available_fonts = tkFont.families()
+mono_font = next((f for f in preferred_fonts if f in available_fonts), "TkFixedFont")
+
+instructions = """I/O         READ = 10 Read a word from the keyboard into a specific location in memory.
+            WRITE = 11 Write a word from a specific location in memory to screen.
+Load/store  LOAD = 20 Load a word from a specific location in memory into the accumulator.
+            STORE = 21 Store a word from the accumulator into a specific location in memory.
+Arithmetic  ADD = 30 Add a word from a specific location in memory to the word in the accumulator.
+            SUBTRACT = 31 Subtract a word from a specific location in memory from the word in the accumulator.
+            DIVIDE = 32 Divide the word in the accumulator by a word from a specific location in memory.
+            MULTIPLY = 33 multiply a word from a specific location in memory to the word in the accumulator.
+Control     BRANCH = 40 Branch to a specific location in memory
+            BRANCHNEG = 41 Branch to a specific location in memory if the accumulator is negative.
+            BRANCHZERO = 42 Branch to a specific location in memory if the accumulator is zero.
+            HALT = 43 Pause the program"""
 
 def run_program():
     result_var.set(filename_entry.get())
@@ -74,21 +96,21 @@ def console_instructions():
     ]
     print(*operations, sep="\n\n")
 
-def close():
-    # closes the app
-    root.destroy()
-
-def reset_bt():
+def reset_application():
     root.destroy()
     os.execl(sys.executable, sys.executable, *sys.argv)
+
+def close_application():
+    # closes the app
+    root.destroy()
 
 # Label - displays text
 label = tk.Label(root, text="Hello, User!")
 label.pack(pady=10)
 
-# File control - top row of file-control related elements
+# File control - top row of file control related elements
 file_control_container = tk.Frame(root)
-file_control_container.pack(pady=10)
+file_control_container.pack(padx=10, pady=10)
 
 # Filename entry - single-line input
 filename_entry = tk.Entry(file_control_container, width=40)
@@ -100,25 +122,30 @@ open_button.pack(side=tk.LEFT, padx=5)
 save_button = tk.Button(file_control_container, text="Save File", command=save_file)
 save_button.pack(side=tk.LEFT, padx=5)
 
-# Variable to signal when user has submitted (button clicked)
-result_var = tk.StringVar()
-current_filepath = None
-
 # Small text editor where you can modify the text file with your operations
-text = tk.Text(root, fg='dark green', bg='white', font='times-new-roman 14', width=50, height=10)
-text.pack()
+text = tk.Text(root, fg='dark green', bg='white', font=(mono_font, 14), height=10)
+text.pack(fill='x')
 
 run_button = tk.Button(root, text="RUN", command=run_program)
 run_button.pack(pady=10)
 
-operation_instructions = tk.Button(root, text="Operation Instructions", command=console_instructions)
-operation_instructions.pack(pady = 10)
+# Removed button that sends instructions to console
+# operation_instructions_button = tk.Button(root, text="Operation Instructions", command=console_instructions)
+# operation_instructions_button.pack(pady = 10)
 
-close_button = tk.Button(root, text="Exit Program", command=close)
-close_button.pack(pady=10)
+# Instructions for use
+operation_instructions = tk.Message(root, text=instructions, width=1000, font=(mono_font, 12))
+operation_instructions.pack(fill='x')
 
-reset_button = tk.Button(root, text="Reset Program", command=reset_bt)
-reset_button.pack(pady=10)
+# Application control - bottom row of application control related elements
+application_control_container = tk.Frame(root)
+application_control_container.pack(padx=10)
+
+# Application control buttons
+reset_button = tk.Button(application_control_container, text="Reset Program", command=reset_application, width=30)
+reset_button.pack(side=tk.LEFT, padx=5)
+close_button = tk.Button(application_control_container, text="Exit Program", command=close_application, width=30)
+close_button.pack(side=tk.LEFT, padx=5)
 
 def run_gui():
     """Start the GUI event loop. Call this from Main when you want to show the window."""
