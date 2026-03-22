@@ -7,7 +7,7 @@ from Simulator import BasicMLSimulator
 import tkinter.font as tkFont
 root = tk.Tk()
 root.title("UVSim")
-# root.geometry("900x900")
+root.geometry("900x900")
 
 # Variable to signal when user has submitted (button clicked)
 result_var = tk.StringVar()
@@ -104,48 +104,55 @@ def close_application():
     # closes the app
     root.destroy()
 
+# Layout setup: use grid for all root children
+root.columnconfigure(0, weight=1)
+root.rowconfigure(2, weight=1)
+
 # Label - displays text
 label = tk.Label(root, text="Hello, User!")
-label.pack(pady=10)
+label.grid(row=0, column=0, pady=10, sticky='ew')
 
 # File control - top row of file control related elements
 file_control_container = tk.Frame(root)
-file_control_container.pack(padx=10, pady=10)
+file_control_container.grid(row=1, column=0, padx=10, pady=10, sticky='ew')
+file_control_container.columnconfigure(0, weight=1)
+file_control_container.columnconfigure(1, weight=0)
+file_control_container.columnconfigure(2, weight=0)
 
 # Filename entry - single-line input
 filename_entry = tk.Entry(file_control_container, width=40)
-filename_entry.pack(side=tk.LEFT, padx=5)
+filename_entry.grid(row=0, column=0, padx=5, sticky='ew')
 
 # File action buttons inside file control container
 open_button = tk.Button(file_control_container, text="Open File", command=open_file)
-open_button.pack(side=tk.LEFT, padx=5)
+open_button.grid(row=0, column=1, padx=5)
 save_button = tk.Button(file_control_container, text="Save File", command=save_file)
-save_button.pack(side=tk.LEFT, padx=5)
+save_button.grid(row=0, column=2, padx=5)
 
 # Small text editor where you can modify the text file with your operations
-text = tk.Text(root, fg='dark green', bg='white', font=(mono_font, 14), height=10)
-text.pack(fill='x')
+text = tk.Text(root, fg='dark green', bg='white', font=(mono_font, 14), bd=2, highlightthickness=2, highlightbackground="#000", height=20)
+text.grid(row=2, column=0, padx=20, pady=20, sticky='nsew')
 
 run_button = tk.Button(root, text="RUN", command=run_program)
-run_button.pack(pady=10)
-
-# Removed button that sends instructions to console
-# operation_instructions_button = tk.Button(root, text="Operation Instructions", command=console_instructions)
-# operation_instructions_button.pack(pady = 10)
+run_button.grid(row=3, column=0, pady=10)
 
 # Instructions for use
+instructions_label = tk.Label(root, text="List of Functions:")
+instructions_label.grid(row=4, column=0, sticky='w', padx=10)
 operation_instructions = tk.Message(root, text=instructions, width=1000, font=(mono_font, 12))
-operation_instructions.pack(fill='x')
+operation_instructions.grid(row=5, column=0, padx=10, sticky='ew')
 
 # Application control - bottom row of application control related elements
 application_control_container = tk.Frame(root)
-application_control_container.pack(padx=10)
+application_control_container.grid(row=6, column=0, padx=10, pady=10, sticky='ew')
+application_control_container.columnconfigure(0, weight=1)
+application_control_container.columnconfigure(1, weight=1)
 
 # Application control buttons
 reset_button = tk.Button(application_control_container, text="Reset Program", command=reset_application, width=30)
-reset_button.pack(side=tk.LEFT, padx=5)
+reset_button.grid(row=0, column=0, padx=5, sticky='w')
 close_button = tk.Button(application_control_container, text="Exit Program", command=close_application, width=30)
-close_button.pack(side=tk.LEFT, padx=5)
+close_button.grid(row=0, column=1, padx=5, sticky='e')
 
 def run_gui():
     """Start the GUI event loop. Call this from Main when you want to show the window."""
