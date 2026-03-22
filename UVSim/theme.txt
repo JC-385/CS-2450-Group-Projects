@@ -1,0 +1,2 @@
+primary=#4C721D
+secondary=#FFFFFF
