@@ -2,24 +2,25 @@ from pytest import MonkeyPatch,raises
 from Operators import *
 
 class Tests:
-    op = Operators()
+    def __init__(self):
+        self.op = Operators()
+        self.memory = [0] *100
     #Test 1
     def test_read(self,monkeypatch):
-        memory = [0] *100
         
         monkeypatch.setattr('builtins.input', lambda _: '1234')
 
-        self.op.READ(5, memory)
+        self.op.READ(5, self.memory)
 
-        assert memory[5] == 1234
+        assert self.memory[5] == 1234
     #Test 2
     def test_read_invalid(self,monkeypatch):
-        memory = [0] *100
+        self.memory = [0] *100
         
         monkeypatch.setattr('builtins.input', lambda _: 'abc')
 
         with raises(ValueError):
-            self.op.READ(5, memory)
+            self.op.READ(5, self.memory)
     #Test 3
     def test_write(self, monkeypatch,capsys):
         memory = [0] *100

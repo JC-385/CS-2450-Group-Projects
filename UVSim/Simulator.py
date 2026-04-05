@@ -2,7 +2,7 @@ from Operators import *
 
 class BasicMLSimulator:
     def __init__(self, input_function, output_function):
-        self.memory = [0] * 100
+        self.memory = [0] * 250
         self.accumulator = 0
         self.pc = 0
         self.halted = False
@@ -13,15 +13,23 @@ class BasicMLSimulator:
 
     def load_program(self, filename):
         with open(filename, "r") as file:
-            self.program = [line.strip() for line in file]
+            lines = [line.strip() for line in file]
+        if len(lines) < 250:
+            raise IndexError("Too many operations.")
+        self.program = lines
 
     def step(self):
         self.memory 
         if self.pc >= len(self.program) or self.halted:
             return
         line = self.program[self.pc]
-        opcode = line[1:3]
-        address = int(line[3:5])
+        #This should handle if the line is 4 digits or 6 digits.
+        if len(line) == 5:
+            opcode = line[1:3]
+            address = int(line[3:5])
+        elif len(line) == 7:
+            opcode = line[1:4]
+            address = int(line[4:7])
 
         match opcode:
             case "10":
