@@ -16,25 +16,20 @@ class Tests:
         """Initialize test fixtures."""
         self.op = Operators()
         self.memory = [0] * 100
-
-    def test_read(self, monkeypatch):
-        """Test READ operation with valid input."""
-        self.memory = [0] * 100
         
         monkeypatch.setattr('builtins.input', lambda _: '1234')
 
-        self.op.READ(5, self.memory, input)
+        self.op.READ(5, self.memory)
 
         assert self.memory[5] == 1234
-
-    def test_read_invalid(self, monkeypatch):
-        """Test READ operation with invalid input (outside range)."""
-        self.memory = [0] * 100
+    #Test 2
+    def test_read_invalid(self,monkeypatch):
+        self.memory = [0] *100
         
         monkeypatch.setattr('builtins.input', lambda _: 'abc')
 
         with raises(ValueError):
-            self.op.READ(5, self.memory, input)
+            self.op.READ(5, self.memory)
     #Test 3
     def test_write(self, monkeypatch,capsys):
         memory = [0] *100

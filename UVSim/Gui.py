@@ -89,7 +89,12 @@ Control     BRANCH = 40 Branch to a specific location in memory
             HALT = 43 Pause the program"""
 
 def run_program():
-    """Execute a loaded BasicML program in console mode."""
+    """Load and execute a BasicML program.
+    
+    Retrieves the filename from the GUI, creates a BasicMLSimulator instance,
+    loads the program, enters console mode for I/O, and runs the program
+    to completion or until HALT.
+    """
     simulator = BasicMLSimulator(console_input, console_output)
 
     filename = filename_entry.get()
@@ -241,17 +246,21 @@ def console_input(prompt):
 root.columnconfigure(0, weight=1)
 root.rowconfigure(2, weight=1)
 
+# Label - displays text
 label = tk.Label(root, text="Hello, User!", bg=theme["primary"], fg="white")
 label.grid(row=0, column=0, pady=10, sticky='ew')
 
+# Console - later added by enter_console()
 console = tk.Frame(root)
 
+# File control - top row of file control related elements
 file_control_container = tk.Frame(root, bg=theme["secondary"])
 file_control_container.grid(row=1, column=0, padx=10, pady=10, sticky='ew')
 file_control_container.columnconfigure(0, weight=1)
 file_control_container.columnconfigure(1, weight=0)
 file_control_container.columnconfigure(2, weight=0)
 
+# Filename entry - single-line input
 filename_entry = tk.Entry(file_control_container, width=40)
 filename_entry.grid(row=0, column=0, padx=5, sticky='ew')
 
@@ -263,6 +272,7 @@ save_button = tk.Button(file_control_container, text="Save File", command=save_f
                         bg=theme["primary"], fg="white")
 save_button.grid(row=0, column=2, padx=5)
 
+# Small text editor where you can modify the text file with your operations
 text = tk.Text(root, fg='dark green', bg=theme["secondary"], font=(mono_font, 14), bd=2, highlightthickness=2, highlightbackground="#000", height=20)
 text.grid(row=2, column=0, padx=20, pady=20, sticky='nsew')
 
