@@ -1,90 +1,162 @@
-Design Document
-high-level functionality
-    application asks for the name of a file
-        this text file willl be formated by rows with 4 digits per row
-    the application will then read each row and split the digits into operator and operands
-    the application will complete the operator such as (READ, WRITE, LOAD, STORE, ADD, SUBTRACT, DIVIDE, MULTIPLY, 
-        BRANCH, BRANCHNEG, BRANCHZERO, and HALT )
+===============================================================================
+                          DESIGN DOCUMENT
+                    UVSim - BasicML Virtual Machine
+===============================================================================
 
-User Stories
-    As a user I want to be able to interact with the computer at a lower level so i dont take higher level languages for granted
-    as a user I want full control over what my computer computes
-Use Cases
-    Actor: the program
-    System: memory management and code processor
+OVERVIEW
+========
 
-    READ
-        Goal: read an integer input from the keyboard into a specific memory location
-        Steps:
-        1.Parse function code
-        2.Get user input
-        3.Convert to integer
-        4.Verify range
-        5.Set value in memory
-    WRITE
-        Goal: write the value stored at a specific memory location to the screen
-        Steps:
-        1.Parse function code
-        2.Fetch value from identified memory address
-        3.Output the fetched value to the console
-    LOAD
-        Goal: load a value into the accumulator
-        Steps:
-        1.Parse function code
-        2.Fetch value from specified memory address
-        3.Copy fetched value into accumulator register
-    STORE
-        Goal: store the accumulator's value into a specific memory location
-        Steps:
-        1.Parse function code
-        2.Copy accumulator value into specified memory address
-    ADD
-        Goal: add a value from memory to the accumulator and store the result in the accumulator
-        Steps:
-        1.Parse function code
-        2.Fetch value from speciified memory address
-        3.Add fetched value to accumulator
-        4.Return updated accumulator value
-    SUBTRACT
-        Goal: subtract a value from memory from the accumulator and store the result in the accumulator
-        Steps:
-        1.Parse function code
-        2.Fetch value from speciified memory address
-        3.Subtract fetched value from accumulator
-        4.Return updated accumulator value
-    DIVIDE
-        Goal: divide the accumulator by a value from memory and store the integer result in the accumulator
-        Steps:
-        1.Parse function code
-        2.Fetch value from speciified memory address
-        3.Divide accumulator by fetched value using integer division
-        4.Return updated accumulator value
-    MULTIPLY
-        Goal: multiply the accumulator by a value from memory and store the result in the accumulator
-        Steps:
-        1.Parse function code
-        2.Fetch value from speciified memory address
-        3.Multiply accumulator by fetched value
-        4.Return updated accumulator value
-    BRANCH
-        Goal: unconditionally change the instruction pointer to a specified memory address
-        Steps:
-        1.Parse function code
-        2.Set next instruction pointer to specified address
-    BRANCHNEG
-        Goal: change the instruction pointer to a specified address if the accumulator is negative
-        Steps:
-        1.Parse function code
-        2.Check accumulator sign
-        3.If accumulator is negative, set next instruction pointer to specified address
-    BRANCHZERO
-        Goal: change the instruction pointer to a specified address if the accumulator is zero
-        Steps:
-        1.Parse function code
-        2.Check accumulator value
-        3.If accumulator equals zero, set next instruction pointer to specified address
-    HALT
-        Goal: stop program execution and return control to the environment
-        Steps:
-        1.Parse function code
-        2.Set halted state to True
+UVSim is an educational virtual machine simulator that executes BasicML 
+programs. It implements a classic fetch-decode-execute cycle with 250-byte 
+memory, an accumulator, and support for 13 operations.
+
+ARCHITECTURE
+============
+
+COMPONENTS:
+
+1. Main.py - Entry point, launches GUI
+2. Gui.py - tkinter interface for file editing and program execution
+3. Simulator.py - BasicMLSimulator class, manages execution cycle
+4. Operators.py - Operators class, implements 13 operations
+5. test_operators.py - pytest test suite (23 tests)
+
+MACHINE STATE:
+
+- Memory: 250 words (addresses 0-249), initialized to 0
+- Accumulator: Working register for arithmetic results
+- Program Counter (PC): Current instruction pointer, initialized to 0
+- Halted: Boolean flag to signal program termination
+
+EXECUTION CYCLE:
+
+  1. Fetch: Load instruction at program[pc]
+  2. Decode: Parse 4-digit instruction (XX = opcode, YY = address)
+  3. Execute: Call operation handler
+  4. Update: Modify memory/accumulator/pc as needed
+  5. Repeat: Continue until halted or end of program
+
+USER STORIES
+============
+
+- As a user I want to be able to interact with the computer at a lower level 
+  so I don't take higher level languages for granted
+- As a user I want full control over what my computer computes
+
+USE CASES
+=========
+
+Actor: The program
+System: Memory management and code processor
+
+OPERATIONS (13 total)
+=====================
+
+I/O OPERATIONS:
+
+  READ (10):
+    Goal: Read an integer input from the keyboard into a specific memory location
+    Steps:
+      1. Parse function code
+      2. Get user input
+      3. Convert to integer
+      4. Verify range (-9999 to 9999)
+      5. Set value in memory
+
+  WRITE (11):
+    Goal: Write the value stored at a specific memory location to the screen
+    Steps:
+      1. Parse function code
+      2. Fetch value from identified memory address
+      3. Output the fetched value to the console
+
+LOAD/STORE OPERATIONS:
+
+  LOAD (20):
+    Goal: Load a value into the accumulator
+    Steps:
+      1. Parse function code
+      2. Fetch value from specified memory address
+      3. Copy fetched value into accumulator register
+
+  STORE (21):
+    Goal: Store the accumulator's value into a specific memory location
+    Steps:
+      1. Parse function code
+      2. Copy accumulator value into specified memory address
+
+ARITHMETIC OPERATIONS:
+
+  ADD (30):
+    Goal: Add a value from memory to the accumulator and store the result
+    Steps:
+      1. Parse function code
+      2. Fetch value from specified memory address
+      3. Add fetched value to accumulator
+      4. Return updated accumulator value
+
+  SUBTRACT (31):
+    Goal: Subtract a value from memory from the accumulator and store the result
+    Steps:
+      1. Parse function code
+      2. Fetch value from specified memory address
+      3. Subtract fetched value from accumulator
+      4. Return updated accumulator value
+
+  DIVIDE (32):
+    Goal: Divide the accumulator by a value from memory and store the integer result
+    Steps:
+      1. Parse function code
+      2. Fetch value from specified memory address
+      3. Divide accumulator by fetched value using integer division
+      4. Return updated accumulator value
+
+  MULTIPLY (33):
+    Goal: Multiply the accumulator by a value from memory and store the result
+    Steps:
+      1. Parse function code
+      2. Fetch value from specified memory address
+      3. Multiply accumulator by fetched value
+      4. Return updated accumulator value
+
+CONTROL OPERATIONS:
+
+  BRANCH (40):
+    Goal: Unconditionally change the instruction pointer to a specified address
+    Steps:
+      1. Parse function code
+      2. Set next instruction pointer to specified address
+
+  BRANCHNEG (41):
+    Goal: Change the instruction pointer if the accumulator is negative
+    Steps:
+      1. Parse function code
+      2. Check accumulator sign
+      3. If accumulator < 0, set next instruction pointer to specified address
+
+  BRANCHZERO (42):
+    Goal: Change the instruction pointer if the accumulator is zero
+    Steps:
+      1. Parse function code
+      2. Check accumulator value
+      3. If accumulator == 0, set next instruction pointer to specified address
+
+  HALT (43):
+    Goal: Stop program execution and return control to the environment
+    Steps:
+      1. Parse function code
+      2. Set halted state to True
+
+ERROR HANDLING
+==============
+
+Validation:
+  - READ: Input must be integer in range -9999 to 9999
+  - DIVIDE: Divisor cannot be zero
+  - Memory: Addresses must be 0-249
+
+Behavior:
+  - Invalid input raises ValueError, program terminates
+  - Division by zero raises ZeroDivisionError
+  - Invalid operation codes print error, continue execution
+  - Out-of-range memory raises IndexError

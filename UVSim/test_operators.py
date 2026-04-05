@@ -1,26 +1,40 @@
-from pytest import MonkeyPatch,raises
+"""Test suite for BasicML operations.
+
+Comprehensive pytest test suite covering all 13 operations in the Operators
+class, including success cases, error handling, and boundary conditions.
+Uses pytest fixtures and monkeypatching for I/O mocking.
+"""
+
+from pytest import MonkeyPatch, raises
 from Operators import *
 
+
 class Tests:
+    """Test cases for all BasicML operations."""
+
     def __init__(self):
+        """Initialize test fixtures."""
         self.op = Operators()
-        self.memory = [0] *100
-    #Test 1
-    def test_read(self,monkeypatch):
+        self.memory = [0] * 100
+
+    def test_read(self, monkeypatch):
+        """Test READ operation with valid input."""
+        self.memory = [0] * 100
         
         monkeypatch.setattr('builtins.input', lambda _: '1234')
 
-        self.op.READ(5, self.memory)
+        self.op.READ(5, self.memory, input)
 
         assert self.memory[5] == 1234
-    #Test 2
-    def test_read_invalid(self,monkeypatch):
-        self.memory = [0] *100
+
+    def test_read_invalid(self, monkeypatch):
+        """Test READ operation with invalid input (outside range)."""
+        self.memory = [0] * 100
         
         monkeypatch.setattr('builtins.input', lambda _: 'abc')
 
         with raises(ValueError):
-            self.op.READ(5, self.memory)
+            self.op.READ(5, self.memory, input)
     #Test 3
     def test_write(self, monkeypatch,capsys):
         memory = [0] *100
