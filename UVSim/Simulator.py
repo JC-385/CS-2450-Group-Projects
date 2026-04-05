@@ -166,5 +166,4 @@ class BasicMLSimulator:
         self.memory = [0] * 100
         self.accumulator = 0
         self.pc = 0
-        self.halted = False
         self.program = []
