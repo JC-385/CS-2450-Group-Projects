@@ -26,7 +26,6 @@ MACHINE STATE:
 - Memory: 250 words (addresses 0-249), initialized to 0
 - Accumulator: Working register for arithmetic results
 - Program Counter (PC): Current instruction pointer, initialized to 0
-- Halted: Boolean flag to signal program termination
 
 EXECUTION CYCLE:
 
@@ -145,7 +144,7 @@ CONTROL OPERATIONS:
     Goal: Stop program execution and return control to the environment
     Steps:
       1. Parse function code
-      2. Set halted state to True
+      2. Return False to signal end of execution
 
 ERROR HANDLING
 ==============

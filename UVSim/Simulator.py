@@ -18,7 +18,6 @@ class BasicMLSimulator:
         memory (list): 250-element array of integers (0 initialized).
         accumulator (int): Working register for arithmetic results.
         pc (int): Program counter; index of next instruction to execute.
-        halted (bool): Execution state flag; True when HALT encountered.
         program (list): Loaded list of instruction strings.
         op (Operators): Instance of Operators for executing instructions.
         input_function (callable): Callback for READ operation input.
@@ -66,7 +65,8 @@ class BasicMLSimulator:
         
         Fetches the instruction at program counter (pc), decodes the opcode
         and operand, executes the operation via Operators, and updates
-        machine state. Stops if halted or at end of program.
+        machine state. Returns False if program counter reaches end of program,
+        True otherwise.
         
         The instruction format is XXYY where XX is the opcode (10-43) and
         YY is the memory address operand.
@@ -143,7 +143,7 @@ class BasicMLSimulator:
         """Execute program until HALT or end of program.
         
         Repeatedly calls step() to execute instructions sequentially until
-        the halted flag is set (by HALT operation) or the program counter
+        the HALT operation returns False or the program counter
         reaches the end of the program.
         """
         while self.step():
@@ -159,7 +159,7 @@ class BasicMLSimulator:
     def reset(self):
         """Reset simulator to initial state.
         
-        Clears memory, accumulator, program counter, halted flag, and
+        Clears memory, accumulator, program counter, and
         program storage. Prepares simulator for loading and executing
         a new program.
         """
