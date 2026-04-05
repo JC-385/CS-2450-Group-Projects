@@ -37,7 +37,6 @@ class BasicMLSimulator:
         self.memory = [0] * 250
         self.accumulator = 0
         self.pc = 0
-        self.halted = False
         self.program = []
         self.op = Operators()
         self.input_function = input_function
@@ -76,8 +75,8 @@ class BasicMLSimulator:
             ValueError: If operation execution fails (e.g., invalid input).
             IndexError: If memory address is out of range.
         """
-        if self.pc >= len(self.program) or self.halted:
-            return
+        if self.pc >= len(self.program):
+            return False
         line = self.program[self.pc]
         # Parse instruction: position 0 ignored, positions 1-2 are opcode, 3-4 are address
         if len(line) == 5:
@@ -91,44 +90,54 @@ class BasicMLSimulator:
             # Invalid format, skip this instruction
             print("Invalid operator")
             self.pc += 1
-            return
+            return True
+
+        self.pc += 1
 
         match opcode:
             case "10":
                 self.op.READ(address, self.memory, self.input_function)
+                return True
             case "11":
                 self.op.WRITE(address, self.memory, self.output_function)
+                return True
             case "20":
                 self.accumulator = self.op.LOAD(address, self.memory)
+                return True
             case "21":
                 self.op.STORE(address, self.memory, self.accumulator)
+                return True
             case "30":
                 self.accumulator = self.op.ADD(address, self.memory, self.accumulator)
+                return True
             case "31":
                 self.accumulator = self.op.SUBTRACT(address, self.memory, self.accumulator)
+                return True
             case "32":
                 self.accumulator = self.op.DIVIDE(address, self.memory, self.accumulator)
+                return True
             case "33":
                 self.accumulator = self.op.MULTIPLY(address, self.memory, self.accumulator)
+                return True
             case "40":
                 self.pc = self.op.BRANCH(address)
-                return
+                return True
             case "41":
                 new_pc = self.op.BRANCHNEG(address, self.accumulator)
                 if new_pc is not None:
                     self.pc = new_pc
-                    return
+                    return True
             case "42":
                 new_pc = self.op.BRANCHZERO(address, self.accumulator)
                 if new_pc is not None:
                     self.pc = new_pc
-                    return
+                    return True
             case "43":
                 self.halted = self.op.HALT()
+                return False
             case _:
                 print("Invalid operator")
-
-        self.pc += 1
+                return True
 
     def run(self):
         """Execute program until HALT or end of program.
@@ -137,8 +146,8 @@ class BasicMLSimulator:
         the halted flag is set (by HALT operation) or the program counter
         reaches the end of the program.
         """
-        while not self.halted and self.pc < len(self.program):
-            self.step()
+        while self.step():
+            pass
 
     def print_memory(self):
         """Debug utility: Print entire memory contents.

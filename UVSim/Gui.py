@@ -273,7 +273,8 @@ save_button = tk.Button(file_control_container, text="Save File", command=save_f
 save_button.grid(row=0, column=2, padx=5)
 
 # Small text editor where you can modify the text file with your operations
-text = tk.Text(root, fg='dark green', bg=theme["secondary"], font=(mono_font, 14), bd=2, highlightthickness=2, highlightbackground="#000", height=20)
+text = tk.Text(root, fg='dark green', bg=theme["secondary"], font=(mono_font, 14), 
+               bd=2, highlightthickness=2, highlightbackground="#000", height=20)
 text.grid(row=2, column=0, padx=20, pady=20, sticky='nsew')
 
 run_button = tk.Button(root, text="RUN", command=run_program,
