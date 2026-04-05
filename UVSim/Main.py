@@ -5,7 +5,7 @@ tkinter-based graphical user interface.
 """
 
 from Simulator import BasicMLSimulator
-from Gui import getEntryValue, run_gui
+from Gui import run_gui
 
 
 def main():
