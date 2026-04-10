@@ -87,6 +87,11 @@ def console_input(prompt):
 simulator = None
 
 
+# helper: check line count limit
+def exceeds_line_limit(content):
+    return len(content.strip().split("\n")) > 250
+
+
 #run program 
 def run_program():
     global simulator
@@ -109,7 +114,13 @@ def run_program():
         return
 
     simulator = BasicMLSimulator(console_input, console_output)
-    simulator.load_program(filename)
+
+    try:
+        simulator.load_program(filename)
+    except Exception as e:
+        status_label.config(text=f"ERROR: {e}")
+        return
+
     status_label.config(text=f"Running: {filename}")
 
     # stepping function
@@ -130,17 +141,29 @@ def open_file():
     filepath = askopenfilename(filetypes=[("Text file", "*.txt"), ("All Files", "*.*")])
 
     if filepath:
+        with open(filepath, "r") as file:
+            content = file.read()
+
+        if exceeds_line_limit(content):
+            status_label.config(text="ERROR: File exceeds 250 lines.")
+            return
+
         current_filepath = filepath
         filename_entry.delete(0, tk.END)
         filename_entry.insert(0, filepath)
 
-        with open(filepath, "r") as file:
-            text.delete("1.0", tk.END)
-            text.insert(tk.END, file.read())
+        text.delete("1.0", tk.END)
+        text.insert(tk.END, content)
 
 
 def save_file():
     global current_filepath
+
+    content = text.get("1.0", tk.END)
+
+    if exceeds_line_limit(content):
+        status_label.config(text="ERROR: Cannot save more than 250 lines.")
+        return
 
     if current_filepath is None:
         current_filepath = filedialog.asksaveasfilename(defaultextension='.txt',
@@ -148,7 +171,7 @@ def save_file():
 
     if current_filepath:
         with open(current_filepath, "w") as file:
-            file.write(text.get("1.0", tk.END))
+            file.write(content)
 
 
 #window control functions
