@@ -37,7 +37,7 @@ class BasicMLSimulator:
         self.accumulator = 0
         self.pc = 0
         self.program = []
-        self.op = Operators()
+        self.op = BasicMLSimulator()
         self.input_function = input_function
         self.output_function = output_function
 
