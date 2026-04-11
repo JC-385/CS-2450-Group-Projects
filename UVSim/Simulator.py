@@ -1,169 +1,149 @@
-"""BasicML virtual machine simulator.
-
-Provides the core execution engine for BasicML programs. Implements the
-fetch-decode-execute cycle with 250-byte memory, accumulator register,
-program counter, and support for 13 operations.
-"""
-
-from Operators import *
-
+from Operators import Operators   
 
 class BasicMLSimulator:
-    """Virtual machine for executing BasicML programs.
-    
-    Manages program execution cycle, memory, registers (accumulator, PC),
-    and delegates operation execution to the Operators class.
-    
-    Attributes:
-        memory (list): 250-element array of integers (0 initialized).
-        accumulator (int): Working register for arithmetic results.
-        pc (int): Program counter; index of next instruction to execute.
-        program (list): Loaded list of instruction strings.
-        op (Operators): Instance of Operators for executing instructions.
-        input_function (callable): Callback for READ operation input.
-        output_function (callable): Callback for WRITE operation output.
-    """
-
     def __init__(self, input_function, output_function):
-        """Initialize BasicML simulator with I/O callbacks.
-        
-        Args:
-            input_function: Callback for READ operations.
-                Signature: input_function(prompt: str) -> int
-            output_function: Callback for WRITE operations.
-                Signature: output_function(value: int) -> None
-        """
-        self.memory = [0] * 250
+        self.memory = [0] * 250   # 250 memory slots
         self.accumulator = 0
-        self.pc = 0
+        self.pc = 0                 # program counter
+        self.halted = False
         self.program = []
-        self.op = BasicMLSimulator()
+        self.word_size = 4          # track 4-digit or 6-digit format
+
+        self.op = Operators()       # operation handler
+
         self.input_function = input_function
         self.output_function = output_function
 
     def load_program(self, filename):
-        """Load a BasicML program from a text file.
-        
-        Reads the file and stores each line as an instruction. Each line
-        should contain a 4-digit instruction code.
-        
-        Args:
-            filename (str): Path to the program file.
-        
-        Raises:
-            FileNotFoundError: If file does not exist.
-            IndexError: If program has too many operations (>250).
-        """
+        """Load file into self.program list."""
         with open(filename, "r") as file:
-            lines = [line.strip() for line in file]
+            lines = [line.strip() for line in file if line.strip()]
+
+        # enforce max 250 lines
         if len(lines) > 250:
-            raise IndexError("Too many operations.")
+            raise ValueError("Program exceeds 250 lines")
+
+        # detect format (4-digit or 6-digit)
+        if all(len(line) == 5 for line in lines):
+            self.word_size = 5
+        elif all(len(line) == 7 for line in lines):
+            self.word_size = 7
+        else:
+            raise ValueError("Mixed or invalid instruction format")
+
         self.program = lines
+        self.pc = 0
+        self.halted = False
 
     def step(self):
-        """Execute one instruction (fetch-decode-execute cycle).
-        
-        Fetches the instruction at program counter (pc), decodes the opcode
-        and operand, executes the operation via Operators, and updates
-        machine state. Returns False if program counter reaches end of program,
-        True otherwise.
-        
-        The instruction format is XXYY where XX is the opcode (10-43) and
-        YY is the memory address operand.
-        
-        Raises:
-            ValueError: If operation execution fails (e.g., invalid input).
-            IndexError: If memory address is out of range.
-        """
-        if self.pc >= len(self.program):
-            return False
-        line = self.program[self.pc]
-        # Parse instruction: position 0 ignored, positions 1-2 are opcode, 3-4 are address
-        if len(line) == 5:
-            opcode = line[1:3]
-            address = int(line[3:5])
-        elif len(line) == 7:
-            # Alternative format with different padding
-            opcode = line[1:4]
-            address = int(line[4:7])
-        else:
-            # Invalid format, skip this instruction
-            print("Invalid operator")
-            self.pc += 1
-            return True
+        """Execute a single instruction."""
+        if self.pc >= len(self.program) or self.halted:
+            return
 
+
+
+        line = self.program[self.pc]
+
+        # Program counter always increments unless a branch occurs
         self.pc += 1
 
-        match opcode:
-            case "10":
-                self.op.READ(address, self.memory, self.input_function)
-                return True
-            case "11":
-                self.op.WRITE(address, self.memory, self.output_function)
-                return True
-            case "20":
-                self.accumulator = self.op.LOAD(address, self.memory)
-                return True
-            case "21":
-                self.op.STORE(address, self.memory, self.accumulator)
-                return True
-            case "30":
-                self.accumulator = self.op.ADD(address, self.memory, self.accumulator)
-                return True
-            case "31":
-                self.accumulator = self.op.SUBTRACT(address, self.memory, self.accumulator)
-                return True
-            case "32":
-                self.accumulator = self.op.DIVIDE(address, self.memory, self.accumulator)
-                return True
-            case "33":
-                self.accumulator = self.op.MULTIPLY(address, self.memory, self.accumulator)
-                return True
-            case "40":
-                self.pc = self.op.BRANCH(address)
-                return True
-            case "41":
-                new_pc = self.op.BRANCHNEG(address, self.accumulator)
-                if new_pc is not None:
-                    self.pc = new_pc
-                    return True
-            case "42":
-                new_pc = self.op.BRANCHZERO(address, self.accumulator)
-                if new_pc is not None:
-                    self.pc = new_pc
-                    return True
-            case "43":
-                self.halted = self.op.HALT()
-                return False
-            case _:
-                print("Invalid operator")
-                return True
+        # Validate instruction format
+        sign = line[0]
+        if sign not in ['+', '-']:
+            self.output_function(f"Invalid instruction: {line}")
+            self.halted = True
+            return
+
+        digits = line[1:]
+
+        # parsing based on format
+        if len(digits) == 4:
+            opcode = int(digits[:2])
+            address = int(digits[2:])
+        elif len(digits) == 6:
+            opcode = int(digits[:3])   # skip leading 0 → FIX
+            address = int(digits[3:])
+            # normalize opcode (remove leading zero if needed)
+            opcode = int(str(opcode).lstrip("0"))
+        else:
+            self.output_function(f"Invalid instruction length: {line}")
+            self.halted = True
+            return
+
+        
+        
+
+        # Validate memory address
+        if address < 0 or address > 249:
+            self.output_function(f"Invalid memory address: {address}")
+            self.halted = True
+            return
+
+        # opcode execution
+        try:
+            if opcode == 10:        # read
+                self.memory[address] = int(self.input_function("Enter value:"))
+
+            elif opcode == 11:      # write
+                self.output_function(self.memory[address])
+
+            elif opcode == 20:      # load
+                self.accumulator = self.memory[address]
+
+            elif opcode == 21:      # store
+                self.memory[address] = self.accumulator
+
+            elif opcode == 30:      # add
+                self.accumulator += self.memory[address]
+                self.accumulator %= 1000000  # keep 6-digit limit
+
+            elif opcode == 31:      # subtract
+                self.accumulator -= self.memory[address]
+                self.accumulator %= 1000000
+
+            elif opcode == 32:      # divide
+                if self.memory[address] == 0:
+                    self.output_function("Error: divide by zero")
+                    self.halted = True
+                    return
+                self.accumulator //= self.memory[address]
+
+            elif opcode == 33:      # multiply
+                self.accumulator *= self.memory[address]
+                self.accumulator %= 1000000
+
+            elif opcode == 40:      # branch
+                self.pc = address
+
+            elif opcode == 41:      # branchneg
+                if self.accumulator < 0:
+                    self.pc = address
+
+            elif opcode == 42:      # branchzero
+                if self.accumulator == 0:
+                    self.pc = address
+
+            elif opcode == 43:      # halt
+                self.halted = True
+
+            else:
+                self.output_function(f"Unknown opcode: {opcode}")
+                self.halted = True
+
+        except Exception as e:
+            self.output_function(f"Runtime error: {e}")
+            self.halted = True
 
     def run(self):
-        """Execute program until HALT or end of program.
-        
-        Repeatedly calls step() to execute instructions sequentially until
-        the HALT operation returns False or the program counter
-        reaches the end of the program.
-        """
-        while self.step():
-            pass
+        while not self.halted and self.pc < len(self.program):
+            self.step()
 
     def print_memory(self):
-        """Debug utility: Print entire memory contents.
-        
-        Outputs the current state of all 250 memory cells to the console.
-        """
         print(self.memory)
 
     def reset(self):
-        """Reset simulator to initial state.
-        
-        Clears memory, accumulator, program counter, and
-        program storage. Prepares simulator for loading and executing
-        a new program.
-        """
-        self.memory = [0] * 100
+        self.memory = [0] * 250   # UPDATED
         self.accumulator = 0
         self.pc = 0
+        self.halted = False
         self.program = []
